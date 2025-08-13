@@ -1,0 +1,27 @@
+/******************************/
+
+
+agent :
+    connect with name = "Rato Mickey", host = "127.0.0.1";
+    
+    var angle beta;
+    var real tempo = 5.5;
+    var integer ciclos = 20;
+    var string msg = "Início do movimento\n";
+    beta := compass sense;
+
+    print msg;
+    rotate left at beta / 8.0;
+    wait tempo;
+
+    print "Avançar durante ", ciclos, " ciclos\n";
+    speed at 0.2;
+    wait ciclos - 1;
+
+    // Teste de typecast e comparação
+    var integer ciclosInt = integer(tempo);
+    var integer igual = ciclos == ciclosInt;
+
+    stop;
+    turn finish led on;
+end

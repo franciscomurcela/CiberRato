@@ -1,0 +1,12 @@
+/*
+ * Agent: teste3.mus
+ * Testa leitura e print de uma cena de ficheiro .crs
+ */
+
+agent :
+    var string fname = read "Insere o caminho do ficheiro de cena:";
+    var scene theScene = load fname;
+
+    print "Conteúdo da cena:\n";
+    print theScene;
+end

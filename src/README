@@ -1,0 +1,68 @@
+# Scripts de Avaliação — Pasta `src/`
+
+Este projeto inclui scripts bash para facilitar o ciclo de compilação, geração e execução de exemplos das linguagens `.mus` e `.crs`.
+
+## Scripts disponíveis
+
+### 1. `build.bash`
+
+Compila as gramáticas ANTLR4 e o código Java de ambas as linguagens.
+
+```sh
+./build.bash
+```
+
+---
+
+### 2. `clean.bash`
+
+
+```sh
+./clean.bash
+```
+
+---
+
+### 3. `compile.bash`
+
+Compila um ficheiro de exemplo `.mus` ou `.crs` da pasta `examples/` e gera o output correspondente.
+
+```sh
+./compile.bash nome_exemplo.mus
+./compile.bash nome_exemplo.crs
+```
+Atenção: Escolher ficheiro que se encontre na pasta `examples/`
+
+- Para `.mus`, gera `mus/Output.java`
+- Para `.crs`, gera `crs/scene-lab.xml` e `crs/scene-grd.xml`
+
+---
+
+### 4. `run.bash`
+
+Compila e executa o ficheiro Java gerado (`Output.java`).  
+Copia o ficheiro para `ciber/jAgents/`, compila e executa no simulador.
+
+```sh
+./run.bash mus/Output.java
+```
+
+---
+
+## Exemplos de utilização
+
+```sh
+./build.bash
+./compile.bash min-03.mus
+./run.bash Output.java
+
+./compile.bash min-01.crs
+# (os ficheiros XML são mostrados no terminal)
+```
+
+---
+
+## Notas
+
+- Os exemplos devem estar na pasta `examples/`.
+- Os scripts assumem a estrutura de diretórios do projeto conforme fornecida.

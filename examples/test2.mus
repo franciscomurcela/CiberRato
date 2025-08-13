@@ -1,0 +1,8 @@
+// Teste 2: Typecast permitido e proibido
+agent :
+  var integer x = integer(3.7);
+  var integer y = integer("42");
+  var angle ang = angle(180);
+  var real r = real(ang);
+  var angle fail = angle("not allowed"); // Erro esperado
+end

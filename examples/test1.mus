@@ -1,0 +1,11 @@
+// Teste 1: Declaração e atribuição corretas
+agent :
+  var integer a = 1;
+  var real b = 2.5;
+  var angle ang = 90;
+  var string s = "ok";
+  a := 10;
+  b := 3.14;
+  ang := 45;
+  s := "done";
+end

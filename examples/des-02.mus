@@ -1,0 +1,111 @@
+/*
+ * Agent: a2-1.mus
+ * Challenge: visit 2 target areas, signaling the visit, and return to the starting spot
+ * mus2 purpose: illustration of mus' level 2 features
+ */
+
+/****************************************************************/
+
+behavior gotoBeacon:
+	input integer bn;
+    input real vel;
+
+    print "Going to beacon", bn, "at speed", vel, "\n"; // a space should be inserted between expressions
+
+    print ".. Rotating until facing beacon\n";
+    var angle delta = beacon bn sense;          // a local variable with initialization
+    while delta < -10 degrees or delta > 10 degrees :
+        rotate left at 0.2;
+        delta := beacon bn sense;
+    end
+
+    print "\n..Driving to beacon, adjusting direction if necessary\n";
+    const real kp = 0.2;
+    while floor sense <> bn:                    // operator '<>' means different of 
+        speed at vel + twist left kp * delta;
+        delta := beacon bn sense;
+    end
+
+    /* stop robot */
+    stop;
+    
+end
+
+/****************************************************************/
+
+behavior gotoPosition :
+    input point dst;        // destination point
+    input real vel;         // nominal driving speed
+    input real margin;      // proximity margin
+
+    print "Going to point",  dst, "at speed", vel, "with margin", margin;
+
+    print ".. Rotating to roughly face destination point\n";
+
+    /* 'point' is a native datatype, a pair of real numbers;
+     * the 'sense' of the GPS is a point; */
+    var point cur = GPS sense;
+    /* 'atan' is a prefix operator that returns an angle;
+     * the subtraction between 2 points is a point; */
+    var angle delta = atan(dst - cur);
+    while delta < -10 degrees or delta > 10 degrees :
+        rotate left at 0.2;
+        cur := GPS sense;
+        delta := atan (dst - cur);
+    end
+
+    print ".. Approach destination point until given margin is reached\n";
+
+    const real kp = 0.2;
+    /* infix binary operator '<->' returns a real number, 
+     * representing the euclidian distance between 2 poits; */
+    var real distance = cur <-> dst;
+    while distance > margin :
+        speed at vel + twist left kp * delta;
+        distance := cur <-> dst;
+    end
+
+end
+
+/****************************************************************/
+
+agent :
+
+    /* In the intermmediate level, input 'host' and 'port' of 'connect' have default values,
+     * "127.0.0.1" and 6000, respectively; */
+    connect with name = "Topo Gigio";
+
+    /* store its starting spot */
+    var point start = GPS sense;
+
+    print "Visiting target areas\n";
+
+    /* 'count' is a suffix unary operator returning the number of beacons;
+     * also applicable to targets. */
+    var integer n = beacon count;
+    var integer i = 1;
+    while i <= n :
+        print "Going to beacon", i, "\n";
+        run gotoBeacon with vel = 0.1, bn = i;
+        /* signaling the visit;
+         * on and off can not be done in the same cycle */
+        turn visiting led on;
+        turn visiting led off;
+    end
+
+    print "returning to the starting spot\n";
+
+    /* robot must announce its intention to return to its starting spot */
+    turn returning led on;
+    turn returning led off;
+
+    /* returning  is done in 2 step, to allow for a better approximation to the spot */
+    run gotoPosition with vel = 0.1, margin = 2, dst = start;
+    run gotoPosition with vel = 0.02, margin = 0.2, dst = start;
+
+    /* end the challenge */
+    turn finish led on;
+end
+
+/****************************************************************/
+

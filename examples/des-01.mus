@@ -1,0 +1,53 @@
+/*
+ * Agent: a1-1.mus
+ * Challenge solved by agent: visit beacon, signal the visiting and finish
+ * mus2 purpose: illustration of mus' level 1 features
+ */
+
+/****************************************************************/
+
+// definition of a new behavior, with 1 input parameter
+behavior gotoBeacon:
+    input real vel;                                 // vel is a input parameter of type real
+
+    print ".. Rotating until facing beacon 0\n";     // printing a string constant
+
+    /* 'sense' is a suffix operator that represents the value read by a sensor;
+     * the 'sense' of a 'beacon' is an angle value, here used in the condition of a 'while';
+     * internally, a angle is stored in radians, but a literal can be expressed in degrees;
+     * the colon (:) is used the delimite the end of the condition */
+    while beacon 0 sense < -10 degrees or beacon 0 sense > 10 degrees :
+        rotate left at 0.2;         // a driving action that makes the robot rotate around its center
+    end                             // delimites the end of the while's statements
+
+    print ".. Driving to beacon 0, adjusting heading if necessary\n";
+
+    const real kp = 0.2;            // declares a real constant, that is internal to the behavior
+    // the 'sense' of a 'target' is a boolean value
+    // '=' is the equal operator
+    while target 0 sense = false:
+        // a action composed of 2 driving commands, a tangential speed plus an angular adjustment
+        // only 1 driving command is sent to the simulator
+        speed at vel + twist left kp * beacon 0 sense;
+    end
+
+    stop;       // another driving action, equivalent to speed at 0
+    
+end
+
+/****************************************************************/
+
+agent :
+
+    // A built-in behavior that establishes the connection with the simulator
+    // parameters represent the agent's name and the simulator's IP address
+    connect with name = "Topo Gigio", host = "127.0.0.1", port = 6000;
+
+    run gotoBeacon with vel = 0.1;      // execute behavior gotoBeacon
+    turn visiting led on;               // self explanatory
+    turn visiting led off;              // turning on and off can not be done in the same simulation cycle
+    turn finish led on;                 // to end the challenge
+end
+
+/****************************************************************/
+

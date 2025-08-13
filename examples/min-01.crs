@@ -1,0 +1,30 @@
+# 
+# Only line comments exist
+#
+
+#
+# blank lines are to be ignored
+#
+
+#
+# instantiation of a beacon
+# - position is a pair of real numbers
+# - height is a real number
+# 
+#
+beacon: position = (26.0, 12.0), height = 2;
+
+#
+# instantiation of a target
+# - position is a pair of real numbers
+# - radius is a real number
+# 
+target: position = (26.0, 12.0), radius = 1.0;
+
+#
+# instantiation of a starting spot
+# - position is a pair of real numbers
+# - heading is an angle
+#
+spot: position = (2,3), heading = 180 degrees;
+

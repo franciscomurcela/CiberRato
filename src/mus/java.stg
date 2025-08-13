@@ -1,0 +1,150 @@
+typeValue ::= [
+  "integer":"int",
+  "real":"double",
+  "angle":"double",
+  "ciberIF":"ciberIF",
+  "agent":"agent",
+  "string":"String",
+  "scene":"String",
+  default:"null"
+]
+
+parseObject ::= [
+  "integer":"Integer.parseInt",
+  "real":"Double.parseDouble",
+  "angle":"Double.parseDouble",
+  "string":"String.valueOf",
+  default:"null"
+]
+
+module(name,stat) ::= <<
+import ciberIF.*;
+import java.util.Scanner;
+
+public class <name> {
+  <stats(stat)>
+}
+>>
+
+stats(stat) ::= <<
+<if(stat)><stat;separator="\n"><endif>
+>>
+
+funcss(funcs) ::= <<
+<if(funcs)><funcs;separator="\n"><endif>
+>>
+
+for(var,varValue,comp,stat) ::= <<
+for (int <var> = <varValue>; i \< <comp>; i++) {
+  <stats(stat)>
+}
+>>
+
+dow(var,signal,comp,stat,func) ::= <<
+do {
+  <stats(stat)>
+<if(func)>
+} while(<func>);
+<else>
+} while(<var> <signal> <comp>);
+<endif>
+>>
+
+main(stat) ::= <<
+public static void main(String[] args) {
+    Output theAgent = new Output();
+    theAgent.run();
+}
+>>
+
+func(visibility,type,name,stat,args,static) ::= <<
+<visibility> <if(static)><static> <endif><type> <name>(<if(args)><args><endif>) {
+  <stats(stat)>
+}
+>>
+
+args(arg) ::= <<
+<if(arg)><arg;separator=", "><endif>
+>>
+
+funcCall(pre,func,arg,stat) ::= <<
+<stats(stat)>
+<if(pre)><pre>.<endif><func>(<args(arg)>);
+>>
+
+run(main,stat,funcs) ::= <<
+<main>
+<funcss(funcs)>
+public void run() {
+  <stats(stat)>
+}
+>>
+
+assign(stat,var,value) ::= <<
+<stats(stat)>
+<var> = <value>;
+>>
+
+init(value) ::= "<if(value)> = <value><endif>"
+initArg(id,value) ::= "<id> = <value>"
+initFuncArg(type,id) ::= "<typeValue.(type)> <id>"
+decl(type,var,value) ::= "<typeValue.(type)> <var><init(value)>;"
+
+connect(stat,name,host,port) ::= <<
+<stats(stat)>
+<if(port)>
+cif.InitRobot(<name>, 0, <host> + ":" + <port>);
+<else>
+cif.InitRobot(<name>, 0, <host>);
+<endif>
+<wait("1","")>
+>>
+
+newObj(type,var,obj) ::= <<
+<type> <var> = new <obj>();
+>>
+
+binaryExpression(stat,type,var,e1,op,e2) ::= <<
+<stats(stat)>
+<decl(type,var,[e1," ",op," ",e2])>
+>>
+
+print(stat,type,expr,sceneCall) ::= <<
+<stats(stat)>
+<if(sceneCall)>
+<sceneCall>
+<else>
+System.out.print(<expr>);
+<endif>
+>>
+
+drive(stat,e1,e2) ::= <<
+<stats(stat)>
+cif.DriveMotors(<e1>,<e2>);
+<wait("1","")>
+>>
+
+wait(value,stat) ::= <<
+<stats(stat)>
+wait(<value>);
+>>
+
+cast(type,value,stat,var) ::= <<
+<stats(stat)>
+<typeValue.(type)> <var> = <parseObject.(type)>(<value>);
+>>
+
+read(stat, type, var, value) ::= <<
+<stat>
+<type> <var> = <value>;
+>>
+
+constructor(name, body) ::= <<
+public <name>() {
+    <body>
+}
+>>
+
+printSceneCall(filename) ::= <<
+printScene(<filename>);
+>>

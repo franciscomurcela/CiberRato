@@ -1,0 +1,80 @@
+#!/bin/bash
+
+quit()
+{
+    sleep 1
+    killall --quiet simulator Viewer a1
+    sleep 0.5
+}
+
+trap quit SIGINT SIGTERM
+
+printHelp()
+{
+    local msg="USAGE: ./build [OPTIONS]\n"
+        msg+="  OPTIONS:\n"
+        msg+="    -h              print this help\n"
+        msg+="    -s «prefix»     prefix for scene files (default: scn-1)\n"
+        msg+="    (-x|-a) «path»  path to executable file to run (default: agent)\n"
+    echo -e "$msg"
+}
+
+# process CLI arguments
+scn="scn-1"
+agent="agent"
+while [[ $# -ne 0 ]]; do
+    case "$1" in
+        "-h"|"--help") # print help page
+            printHelp;
+            exit 0
+            ;;
+        "-s"|"--scene") # change default scenario
+            if [[ $# -eq 1 ]]; then
+                echo -e "\e[31;1mMissing mandatory argument for option \"$1\"\e[0m"
+                exit 1
+            fi
+            scn="$2"
+            shift 2
+            ;;
+        "-x"|"-a"|"--agent") # change default agent
+            if [[ $# -eq 1 ]]; then
+                echo -e "\e[31;1mMissing mandatory argument for option \"$1\"\e[0m"
+                exit 1
+            fi
+            agent="$2"
+            shift 2
+            ;;
+        *) # bad argument
+            echo -e "\e[31;1mBad argument \"$1\"\e[0m"
+            exit 1;
+    esac
+done
+
+# check existence of agent
+if ! [[ -x "$agent" ]]; then
+    echo -e "\e[31;1mAgent \"$agent\" not found or not executable\e[0m"
+    exit 1;
+fi
+
+# check existence of scenario files
+cfg="../scenes/$scn.xml"
+lab="../scenes/$scn-lab.xml"
+grd="../scenes/$scn-grd.xml"
+if ! [ -f "$cfg" -a -f "$lab" -a -f "$grd" ]; then
+    echo -e "\e[31;1mScene files \"$scn\" not found\e[0m"
+    exit 1
+fi
+
+# launching simulator
+(cd ../bin; ./simulator --param "$cfg" --beacon --gps) &
+sleep 1
+
+# launching viewer
+(cd ../bin; ./Viewer --autoconnect) &
+
+# launching agent
+LD_LIBRARY_PATH=. "./$agent" $*
+
+read -p "Press ENTER to terminate"
+quit
+

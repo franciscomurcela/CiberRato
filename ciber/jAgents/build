@@ -1,0 +1,62 @@
+#!/bin/bash
+
+printHelp()
+{
+    local msg="USAGE: ./build [OPTIONS]\n"
+        msg+="  OPTIONS:\n"
+        msg+="    -h            print this help\n"
+        msg+="    -a «path»     path to agent source code (default: agent.java)\n"
+        msg+="    -x «path»     path to executable file to be built (default: agent.class)\n"
+    echo -e "$msg"
+}
+
+# process CLI arguments
+src="agent.java"
+dst="agent.class"
+while [[ $# -ne 0 ]]; do
+    case "$1" in
+        "-h"|"--help") # print help page
+            printHelp;
+            exit 0
+            ;;
+        "-a"|"--agent") # change default agent
+            if [[ $# -eq 1 ]]; then
+                echo -e "\e[31;1mMissing mandatory argument for option \"$1\"\e[0m"
+                exit 1
+            fi
+            src="$2"
+            shift 2
+            ;;
+        "-x"|"--executable") # change default executable
+            if [[ $# -eq 1 ]]; then
+                echo -e "\e[31;1mMissing mandatory argument for option \"$1\"\e[0m"
+                exit 1
+            fi
+            dst="$2"
+            shift 2
+            ;;
+        *) # bad argument
+            echo -e "\e[31;1mBad argument \"$1\"\e[0m"
+            exit 1;
+    esac
+done
+
+# check existence of agent source code
+if ! [[ -f "$src" ]]; then
+    echo -e "\e[31;1mAgent \"$src\" not found\e[0m"
+    exit 1;
+fi
+
+# build ciberIF.jar, if necessary
+lib="ciberIF"
+if ! [[ -f "${lib}.jar" ]]; then
+    javac ${lib}/*.java
+    jar -cf ${lib}.jar ${lib}/*.class
+    rm -f ${lib}/*.class
+fi
+
+# build executable
+javac "$src"
+
+test $? -eq 0 && echo done
+

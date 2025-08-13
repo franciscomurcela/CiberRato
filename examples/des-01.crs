@@ -1,0 +1,42 @@
+#
+# This scenario description corresponds to the one shown in the PDF document
+#
+
+#
+# 'model' allows to define block of elements
+# it has its own reference frame
+#
+model beacon_target [point: pos]:
+    beacon: position = pos, height = 2;
+    target: position = pos, radius = 1.0;
+end
+
+beacon_target: pos = (26.0, 2.0);
+beacon_target: pos = (7.0, 7.0);
+beacon_target: pos = (26.0, 12.0);
+
+#
+
+wall: height = 1,
+    corners = (16,7) - ++(-1,-1.7) - ++(-2,0) - ++(-1,1.7) - ++(1,1.7) - ++(2,0);
+
+wall: height = 1,
+    corners = (28,5.3) - ++(-1,0) - ++(-1,1.7) - ++(1,1.7) - ++(1,0);
+
+#
+# another model
+#
+model wall1 [point: pos]:
+    wall : height = 1.0, 
+        corners = (pos.x, pos.y) - ++(-1,-1.7) - ++(-2,0) - ++(-1,1.7);
+end
+
+wall1: pos = (16,14);
+wall1: pos = (16,0), vertical flip;     # also horizontal flip, rotate left, rotate right are possible
+    
+#
+
+spot: position = (2,2), heading = 0 degrees;
+
+# expressions must be accepted as well as variables
+

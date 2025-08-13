@@ -1,0 +1,22 @@
+/*
+ * Agent: teste1.mus
+ * Testa leitura de sensores e movimento simples
+ */
+
+agent :
+    connect with name = "TestBot", host = "127.0.0.1";
+
+    var angle theta;
+    theta := compass sense;
+
+    print "Vou rodar para Norte\n";
+    rotate at theta / 8.0;
+    wait 8;
+
+    print "Avançar 5 ciclos\n";
+    speed at 0.2;
+    wait 5;
+
+    stop;
+    turn finish led on;
+end

@@ -1,0 +1,35 @@
+lab(name, width, height, elements) ::= <<
+\<Lab Name="<name>" Width="<width>" Height="<height>">
+<elements; separator="\n">
+\</Lab>
+>>
+
+beacon(x, y, height) ::= <<
+    \<Beacon X="<x>" Y="<y>" Height="<height>"/>
+>>
+
+target(x, y, radius) ::= <<
+    \<Target X="<x>" Y="<y>" Radius="<radius>"/>
+>>
+
+wall(height, corners) ::= <<
+    \<Wall Height="<height>">
+        \<Corners>
+<corners; separator="\n">
+        \</Corners>
+    \</Wall>
+>>
+
+corner(x, y) ::= <<
+            \<Corner X="<x>" Y="<y>"/>
+>>
+
+grid(positions) ::= <<
+\<Grid>
+<positions; separator="\n">
+\</Grid>
+>>
+
+position(x, y, dir) ::= <<
+    \<Position X="<x>" Y="<y>" Dir="<dir>"/>
+>>

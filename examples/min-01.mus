@@ -1,0 +1,34 @@
+/*
+ * Agent: min-1.mus
+ * Challenge solved by agent: point North and move ahead 10 units of length (robot diameters)
+ * mus2 purpose: illustration of mus' level 1 features
+ */
+
+/****************************************************************/
+
+agent :
+
+    // A built-in behavior that establishes the connection with the simulator
+    // parameters represent the agent's name and the simulator's IP address
+    connect with name = "Topo Gigio", host = "127.0.0.1";
+
+    // determine angle to rotate
+    var angle alpha;
+    alpha := compass sense;
+
+    // rotate to face North (North corresponds to X positive semi-axis
+    print "Rotating to face North\n";
+    rotate right at alpha / 16.0;
+    wait 15;
+
+    // move 100 units ahead
+    print "Going ahead during ", 100, " cycles\n";
+    speed at 0.1;
+    wait 10 * 10 - 1;
+
+    stop;
+    turn finish led on;                 // required to end the challenge
+end
+
+/****************************************************************/
+

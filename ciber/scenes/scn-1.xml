@@ -1,0 +1,8 @@
+<Parameters SimTime="1000" CycleTime="50"
+		CompassNoise="0" BeaconNoise="0" ObstacleNoise="0.02"
+		MotorsNoise="2" RunningTimeout="1000"
+        GPS="On" GPSLinNoise="0.0" GPSDirNoise="0.0"
+        ShowActions="False" NBeacons="1" 
+		Lab="../scenes/scn-1-lab.xml"
+		Grid="../scenes/scn-1-grd.xml"
+/>

@@ -1,0 +1,23 @@
+/*
+ * Agent: a1-3.mus
+ * Challenge solved by agent: parse and print a scene
+ * mus2 purpose: illustration of mus' level 1 features
+ */
+
+/****************************************************************/
+
+agent :
+
+    // read the path to a scene file (secundary language)
+    // this way, it is clear the loading happens in run time
+    var string fname = read "Insert scene file path";
+
+    // create a scene object, parsing that file 
+    var scene theScene = load fname;
+
+    // print the scene
+    print "The scene:\n";
+    print theScene;
+
+end
+

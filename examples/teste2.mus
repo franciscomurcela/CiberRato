@@ -1,0 +1,21 @@
+/*
+ * Agent: teste2.mus
+ * Testa leitura de input do utilizador e execução de comportamento
+ */
+
+behavior goForward:
+    input integer steps;
+    print "A avançar ", steps, " ciclos\n";
+    speed at 0.1;
+    wait steps;
+    stop;
+end
+
+agent :
+    connect with name = "InputBot", host = "127.0.0.1";
+
+    var integer n = integer(read "Quantos ciclos avançar? ");
+    run goForward with steps = n;
+
+    turn finish led on;
+end

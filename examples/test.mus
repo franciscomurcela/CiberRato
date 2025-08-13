@@ -1,0 +1,35 @@
+agent :
+  // Declaração correta
+  var integer a = 10;
+  var real b = 2.5;
+  var angle ang = 90;
+  var string s = "hello";
+
+  // Erro: variável já declarada
+  var integer a = 20;
+
+  // Erro: atribuição de tipo incompatível
+  b := "not a number";
+
+  // Erro: uso de variável não declarada
+  c := 5;
+
+  // Erro: palavra reservada
+  var integer background = 1;
+
+  // Comparação correta
+  var integer cmp = a == 10;
+
+  // Comparação inválida
+  var integer cmp2 = a == s;
+
+  // Uso correto de read
+  var string userInput = read "Digite algo:";
+
+  // Uso correto de typecast
+  var integer x = integer(b);
+
+  // Uso incorreto de typecast
+  var angle y = angle(s);
+
+end

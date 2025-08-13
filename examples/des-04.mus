@@ -1,0 +1,25 @@
+/*
+ * Agent: a1-3.mus
+ * Challenge solved by agent: parse a scene and print distances to target areas
+ * mus2 purpose: illustration of mus' level 2 features
+ */
+
+/****************************************************************/
+
+agent :
+
+    /* load scene */
+    var string fname = read "Insert scene file path";
+    var scene theScene = load fname;
+
+    /* check for starting spot, assuming there is one and only one */
+    var real start = theScene.spots;
+
+    /* the 'for each' construction allows to iterate on a list 
+     * the type of iterator element (here t) is inferred from context */
+    for each t in theScene.targets :
+        print "Target " + t.id + " is " + t.position <-> start + " units of length away\n";
+    end
+
+end
+

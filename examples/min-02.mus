@@ -1,0 +1,58 @@
+/*
+ * Agent: min-1.mus
+ * Challenge solved by agent: without conditional code, try to approach target area
+ * mus2 purpose: illustration of mus' level 1 features
+ */
+
+/****************************************************************/
+
+// definition of a new behavior, with 4 input parameters
+behavior gotoTarget:
+    input real angularSpeed;         // angular speed
+    input integer rotationTime;      // number of time units (simulation steps) to rotate
+    input real linearSpeed;          // linear speed
+    input integer aheadTime;         // number of time units to move ahead    
+
+    print ".. Rotating until facing beacon 0\n";     // printing a string constant
+
+    // 'rotate' is an action that commands the robot to rotate at a given angular speed;
+    // actions send a command to the simulator and wait for a response (next set of sensor measures)
+    rotate at angularSpeed;
+
+    // 'wait' is an action that sends nothing to the simulator, so previous locomotion command prevail
+    wait rotationTime - 1;
+
+    print ".. Driving toward target, hopefully\n";
+
+    // 'speed' is an action that command the robot to move forward or backward at a given speed
+    speed at linearSpeed;
+    
+    wait aheadTime - 1;
+
+    stop;       // another driving action, equivalent to speed at 0
+    
+end
+
+/****************************************************************/
+
+agent :
+
+    // A built-in behavior that establishes the connection with the simulator
+    // parameters represent the agent's name and the simulator's IP address
+    connect with name = "Topo Gigio", host = "127.0.0.1", port = 6000;
+
+    // determine angle to rotate
+    var angle alpha;
+    alpha := beacon 0 sense;
+
+    // ask user for number of units to move forward
+    var integer n = integer(read "Insert number of units to move forward: ");
+
+    // 'run' allows to execute a behavior, being 'with' used to assign values to the inputs
+    run gotoTarget with angularSpeed = alpha / 16.0, rotationTime = 16, linearSpeed = 0.1, aheadTime = n;
+
+    turn finish led on;                 // required to end the challenge
+end
+
+/****************************************************************/
+

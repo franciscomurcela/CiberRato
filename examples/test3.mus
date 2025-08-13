@@ -1,0 +1,12 @@
+// Teste 3: Operações e comparações
+agent :
+  var integer a = 5;
+  var real b = 2.0;
+  var angle ang = 30;
+  var integer sum = a + integer(b);
+  var real div = b / 2;
+  var angle ang2 = ang + 10;
+  var integer cmp = a == 5;
+  var integer cmp2 = a == b;
+  var integer cmp3 = a == "str"; // Erro esperado
+end

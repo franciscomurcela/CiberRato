@@ -1,0 +1,135 @@
+/*
+ * Agent: a2-2.mus
+ * Challenge: visit 2 target areas, signaling the visit, and return to the starting spot, 
+ *   while avoiding obstacles
+ * mus2 purpose: illustration of mus' level 2 features
+ */
+
+/****************************************************************/
+
+behavior avoidObstacles :
+
+    input real vel;
+    input real margin;
+
+    alias integer frontal = 0;  // an 'alias' is not a variable
+    alias integer onLeft = 1;
+    alias integer onRight = 2;
+    /* 'infrared' is a sensor that returns a real value,
+     * representing the inverse of the distance to the closest obstacle
+     * in the field of view of the sensor */
+    var real fdist = 1.0 / infrared frontal sense;
+    var real ldist = 1.0 / infrared onLeft sense;
+    var real rdist = 1.0 / infrared onRight sense;
+    const real kp = 0.05;
+    while fdist < margin or ldist < margin or rdist < margin :
+        if bumper sense or fdist < margin:
+            if ldist < rdist :
+                rotate right at vel;
+            else
+                rotate left at vel;
+            end
+        else if ldist < margim :
+            speed at vel + twist right kp * ldist;
+        else
+            speed at vel + twist left kp * rdist;
+        end
+        fdist := 1.0 / infrared frontal sense;
+        ldist := 1.0 / infrared onLeft sense;
+        rdist := 1.0 / infrared onRight sense;
+    end
+end
+
+/****************************************************************/
+
+behavior gotoBeacon:
+	input integer bn;
+    input real vel;
+
+    print "Going to beacon", bn, "at speed", vel, "\n";
+
+    print ".. Rotating until facing beacon\n";
+
+    alias angle delta = beacon bn sense;
+    while delta < -10 degrees or delta > 10 degrees :
+        rotate left at 0.1;
+    end
+
+    print "\n..Driving to beacon adjusting direction if necessary\n";
+    const real kp = 0.2;
+    while floor sense <> bn:
+        run avoidObstacles with vel = vel, margin = 0.5;
+        speed at vel + twist left kp * delta;
+    end
+
+    /* stop robot */
+    stop;
+    
+end
+
+/****************************************************************/
+
+behavior gotoPosition :
+    input point dst;
+    input real vel;
+    input real margin;
+
+    print "Going to point",  dst, "at speed", vel, "with margin", margin;
+
+    print ".. Rotating to roughly face destination point\n";
+
+    alias point cur = GPS sense;
+    alias angle delta = atan(dst - cur);
+    while delta < -10 degrees or delta > 10 degrees :
+        rotate left at 0.2;
+    end
+
+    print ".. Approach destination point until given margin is reached\n";
+
+    const real kp = 0.2;
+    alias real distance = cur <-> dst;
+    while distance > margin :
+        run avoidObstacles with vel = vel, margin = 0.5;
+        speed at vel + twist left kp * delta;
+    end
+
+end
+
+/****************************************************************/
+
+agent :
+
+    connect with name = "Topo Gigio";
+
+    /* store its starting spot */
+    var point start = GPS sense;
+
+    print "Visiting target areas\n";
+
+    var integer n = beacon count;  // também poderia ser 'target count'
+    var integer i = 1;
+    while i <= n :
+        /* goto beacon i */
+        print "Going to beacon", i, "\n";
+        run gotoBeacon with vel = 0.1, bn = i;
+        /* signal visit */
+        turn visiting led on;
+        turn visiting led off;
+    end
+
+    print "returning to the starting spot\n";
+
+    /* announce return */
+    turn returning led on;
+    turn returning led off;
+
+    /* return */
+    run gotoPosition with vel = 0.1, margin = 2, dst = start;
+    run gotoPosition with vel = 0.02, margin = 0.2, dst = start;
+
+    /* end challenge */
+    turn finish led on;
+end
+
+/****************************************************************/
+

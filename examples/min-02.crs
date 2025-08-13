@@ -1,0 +1,17 @@
+#
+# several beacons may exist
+# several targets may exist
+#
+real: X = 26.0, Y = 12.0;
+beacon: position = (X, Y), height = 2;
+target: position = (X, Y), radius = 1.0;
+
+X = 2.0;
+Y = 2.0;
+beacon: position = (X, Y), height = 2;
+target: position = (X, Y), radius = 1.0;
+
+#
+# the available scene may not make available the starting spots
+#
+

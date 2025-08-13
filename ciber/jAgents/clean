@@ -1,0 +1,5 @@
+#!/bin/bash
+
+rm -f ciberIF/*.class
+rm -f *.class
+rm -f ciberIF.jar

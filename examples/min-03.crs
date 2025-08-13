@@ -1,0 +1,22 @@
+
+real: X = 26.0;
+real: Y = 12.0;
+
+beacon: position = (X, Y), height = 2;
+target: position = (X, Y), radius = 1.0;
+
+#
+# instantiation of a wall
+# - height is a real number
+# - corners is a list of points (pairs of real numbers)
+#
+wall: height = 1,
+    corners = (16,7) - (15,5.3) - (13,5.3) - (12,7) - (13,8.7) - (15, 8.7);
+
+#
+# sequence of corner points can be given in incremental mode (operador ++)
+#
+wall: height = 1,
+    corners = (28,5.3) - ++(-1,0) - ++(-1,1.7) - ++(1,1.7) - ++(1,0);
+
+
